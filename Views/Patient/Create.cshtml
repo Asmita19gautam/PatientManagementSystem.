@@ -1,0 +1,63 @@
+﻿@model Patient
+
+@{
+    var action = "Details";
+    ViewData["Title"] = "Registertration for Patient";
+    if(ViewData["Action"] == "Edit")
+    {
+        action = "Edit";
+    }
+    else if(ViewData["Action"] == "Create")
+    {
+        action = "Create";
+    }
+    else if(ViewData["Action"] == "Delete")
+    {
+        action = "Delete";
+    }
+    var method = action == "Details" ? "get" : "post";
+}
+
+<form class="row g-3" asp-controller="Patient" asp-action="@action" method="@method" enctype="multipart/form-data">
+    <input type="hidden" asp-for="PatientID" />
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Name">Name</label>
+        <input class="form-control" asp-for="Name" autocomplete="off">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Age">Age</label>
+        <input class="form-control" asp-for="Age" autocomplete="off">
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Phone">Phone Number</label>
+        <input class="form-control" asp-for="Phone" autocomplete="off">
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Email">Email</label>
+        <input class="form-control" asp-for="Email" autocomplete="off">
+        <span class="text-danger" asp-validation-for="Email"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="AlternateContactNumber">AlternateContactNumber</label>
+        <input class="form-control" asp-for="AlternateContactNumber" autocomplete="off">
+        <span asp-validation-for="AlternateContactNumber" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <a class=" btn btn-outline-secondary" href="/patient/index">Close</a>
+        @if(action == "Edit")
+        {
+            <button type="submit" class="btn btn-outline-success">Update</button>
+        }
+        else if (action=="Create")
+        {
+            <button type="submit" class="btn btn-outline-success" runat="server" OnClick="Save">Save</button>
+        }
+        else if(action=="Delete")
+        {
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+        }
+    </div>
+</form>

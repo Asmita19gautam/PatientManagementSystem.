@@ -1,0 +1,51 @@
+﻿@model List<PatientDoctorAppointment>
+
+@{
+    ViewData["Title"] = "Appointment details";
+}
+
+
+    <nav class="navbar navbar-light bg-light">
+        <div class="col-md-10 align-content-lg-start" style="text-align: left;">
+            <h1>Patient's Appointment Details</h1>
+        </div>
+        <a class="nav-link" asp-controller="PatientDoctorAppointment" asp-action="create">Add</a>
+    </nav>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    @*<th>DateAvailable</th>*@
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@(i++)</td>
+                        <td>
+                            <select class="form-control-plaintext" asp-for="@data.PatientID" asp-items="ViewBag.PatientList" disabled></select>
+                        </td>
+                        <td>
+                            <select class="form-control-plaintext" asp-for="@data.DoctorID" asp-items="ViewBag.DoctorList" disabled></select>
+                        </td>
+                        @*<td>@data.DateAvailable.ToShortDateString()</td>*@
+                        <td>
+                            <a asp-controller="PatientDoctorAppointment" asp-action="Edit" class="btn btn-outline-info btn-sm" asp-route-Id="@data.PaDrApID">Edit</a>
+                            <a asp-controller="PatientDoctorAppointment" asp-action="Details" class="btn btn-outline-secondary btn-sm" asp-route-Id="@data.PaDrApID">Details</a>
+                            <a asp-controller="PatientDoctorAppointment" asp-action="Delete" class="btn btn-outline-danger btn-sm" asp-route-Id="@data.PaDrApID">Delete</a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>

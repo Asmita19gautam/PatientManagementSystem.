@@ -1,0 +1,70 @@
+﻿@model Doctor
+
+@{
+    var action = "Details";
+    ViewData["Title"] = "Registertration for Doctor";
+    if(ViewData["Action"] == "Edit")
+    {
+        action = "Edit";
+    }
+    else if(ViewData["Action"] == "Create")
+    {
+        action = "Create";
+    }
+    else if(ViewData["Action"] == "Delete")
+    {
+        action = "Delete";
+    }
+    var method = action == "Details" ? "get" : "post";
+}
+
+<form class="row g-3" asp-controller="Doctor" asp-action="@action" method="@method" enctype="multipart/form-data">
+    <input type="hidden" asp-for="DoctorID" />
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Name">Name</label>
+        <input class="form-control" asp-for="Name" autocomplete="off">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Phone">Phone Number</label>
+        <input class="form-control" asp-for="Phone" autocomplete="off">
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="Charge">Charge</label>
+        <input class="form-control" asp-for="Charge" autocomplete="off">
+        <span class="text-danger" asp-validation-for="Charge"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="DepID">Department</label>
+        <select class="form-control" id="depId" asp-for="DepID" asp-items="ViewBag.DepartmentList" autocomplete="off"></select>
+        <span asp-validation-for="DepID" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <a class=" btn btn-outline-secondary" href="/Doctor/index">Close</a>
+        @if(action == "Edit")
+        {
+            <button type="submit" class="btn btn-outline-success">Update</button>
+        }
+        else if (action=="Create")
+        {
+            <button type="submit" class="btn btn-outline-success" runat="server" OnClick="Save">Save</button>
+        }
+        else if(action=="Delete")
+        {
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+        }
+    </div>
+</form>
+
+@*@section scripts {
+    <script type="text/javascript">
+        $("document").ready(function() {
+            ('#depId').on('change', function() {
+                debugger
+                var departmentID = ($(this).find(":selected").val());
+                ("#depId").val(id);
+            }).trigger('change');
+        });
+    </script>
+}*@

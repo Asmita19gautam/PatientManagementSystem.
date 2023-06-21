@@ -1,0 +1,67 @@
+﻿@model DoctorTiming
+
+@{
+    var action = "Details";
+    ViewData["Title"] = "Doctor's availability";
+    if (ViewData["Action"] == "Edit")
+    {
+        action = "Edit";
+    }
+    else if (ViewData["Action"] == "Create")
+    {
+        action = "Create";
+    }
+    else if (ViewData["Action"] == "Delete")
+    {
+        action = "Delete";
+    }
+    var method = action == "Details" ? "get" : "post";
+}
+
+<form class="row g-3" asp-controller="DoctorTiming" asp-action="@action" method="@method" enctype="multipart/form-data">
+    <input type="hidden" asp-for="DrTimeID" />
+    <div class="col-md-6">
+        <label class="form-label" asp-for="DoctorID">Doctor</label>
+        <select class="form-control" asp-for="DoctorID" asp-items="ViewBag.DoctorList" autocomplete="off"></select>
+        <span asp-validation-for="DoctorID" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="DateAvailable">DateAvailable</label>
+        <input class="form-control" id="date" asp-for="DateAvailable" autocomplete="off">
+        <span asp-validation-for="DateAvailable" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="AvailableTime">Available Time</label>
+        <input class="form-control" id="time" asp-for="AvailableTime" autocomplete="off">
+        <span asp-validation-for="AvailableTime" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <a class=" btn btn-outline-secondary" href="/DoctorTiming/index">Close</a>
+        @if (action == "Edit")
+        {
+            <button type="submit" class="btn btn-outline-success">Update</button>
+        }
+        else if (action == "Create")
+        {
+            <button type="submit" class="btn btn-outline-success" runat="server" OnClick="Save">Save</button>
+        }
+        else if (action == "Delete")
+        {
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+        }
+    </div>
+</form>
+@section scripts {
+    <script type="text/javascript">
+        $('document').ready(function() {
+            $('#date').on('focusout', function() {
+                debugger
+                var end = $('#date').val();
+                var time = end.split('T');
+               // alert(time[1]);
+                $('#time').val(time[1]);
+                //alert(end);
+            });
+        });
+    </script>
+}

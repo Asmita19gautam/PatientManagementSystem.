@@ -1,0 +1,146 @@
+﻿@model PatientDoctorAppointment
+
+@{
+    var action = "Details";
+    ViewData["Title"] = "Appointment details";
+    if (ViewData["Action"] == "Edit")
+    {
+        action = "Edit";
+    }
+    else if (ViewData["Action"] == "Create")
+    {
+        action = "Create";
+    }
+    else if (ViewData["Action"] == "Delete")
+    {
+        action = "Delete";
+    }
+    var method = action == "Details" ? "get" : "post";
+}
+
+<form class="row g-3" asp-controller="PatientDoctorAppointment" asp-action="@action" method="@method" enctype="multipart/form-data">
+    <input type="hidden" asp-for="PaDrApID" />
+    <div class="col-md-6">
+        <label class="form-label" asp-for="PatientID">Patient</label>
+        <select class="form-control" asp-for="PatientID" asp-items="ViewBag.PatientList" autocomplete="off"></select>
+        <span asp-validation-for="PatientID" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" asp-for="ApppointmentTime">Appointment Date</label>
+        <input class="form-control" type="date" id="date" asp-for="ApppointmentTime" autocomplete="off">
+        <span asp-validation-for="ApppointmentTime" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 dep">
+        <label class="form-label" asp-for="DepID">Department</label>
+        <select class="form-control" id="dep" asp-for="DepID" asp-items="ViewBag.DepartmentList" autocomplete="off"></select>
+        <span asp-validation-for="DepID" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 doc">
+        <label class="form-label" asp-for="DoctorID">Doctor</label>
+        <select class="form-control" id="doc" asp-for="DoctorID" asp-items="ViewBag.DoctorList" autocomplete="off"><option disabled selected>SELECT DEPARTMENT</option></select>
+        <span asp-validation-for="DoctorID" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 drTime">
+        <label class="form-label" asp-for="DrTimeID">Doctor's Available Date</label>
+        <select class="form-control" id="drTime" asp-for="DrTimeID" asp-items="ViewBag.DoctorTimingList" autocomplete="off"></select>
+        <span asp-validation-for="DrTimeID" class="text-danger"></span>
+    </div>
+    <div class="col-md-8">
+        <a class=" btn btn-outline-secondary" href="/PatientDoctorAppointment/index">Close</a>
+        @if (action == "Edit")
+        {
+            <button type="submit" class="btn btn-outline-success">Update</button>
+        }
+        else if (action == "Create")
+        {
+            <button type="submit" class="btn btn-outline-success" runat="server" OnClick="Save">Save</button>
+        }
+        else if (action == "Delete")
+        {
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+        }
+    </div>
+</form>
+@section scripts {
+    <script type="text/javascript">
+        $('document').ready(function() {
+            //$('#date').datepicker({
+            //    debugger
+            //    //dateonly: true,
+            //});
+            $('.dep').hide();
+            $('.doc').hide();
+            $('.drTime').hide();
+            $('#date').on('focusout', function() {
+                $('.dep').show();
+                var end = $('#date').val();
+                var date = end.split('T')[0];
+                var time = end.split('T')[1];
+                 $.ajax({
+                    type: "GET",
+                    url: '/PatientDoctorAppointment/getdepList',
+                    data: { date:date},    // multiple data sent using ajax
+                    success: function(doc) {
+                        debugger
+                        $('#dep').val(doc);
+                        $('#dep').html('');
+                        $.each(doc, function(iteration, val) {
+                            debugger
+                            $('#dep').append($('<option></option>').val(val.depID).html(val.name))
+                        });
+                       //var did= $('#dep').prop('selectedIndex',0).val();
+                       $('#dep').change();
+                     }
+                });
+            });
+            
+            $('#dep').on('change', function() {
+                debugger
+                $('.doc').show();
+                var depID = $('#dep :selected').val();
+                $.ajax({
+                    type: "GET",
+                    url: '/PatientDoctorAppointment/getdocList',
+                    data: { id: depID },    // multiple data sent using ajax
+                    success: function(doc) {
+                        debugger
+                        $('#doc').val(doc);
+                        $('#doc').html('');
+                        $.each(doc, function(iteration, val) {
+                            $('#doc').append($('<option></option>').val(val.doctorID).html(val.name))
+                        });
+                        $('#doc').change();
+                    }
+                });
+            });
+            
+            $('#doc').on('change', function() {
+                debugger
+                $('.drTime').show();
+                var docID = ($(this).find(":selected").val());
+                var date = $('#date').val().split('T')[0];
+                $.ajax({
+                    type: "GET",
+                    url: '/PatientDoctorAppointment/getdrtimeList',
+                    data: { date: date, docID: docID },    // multiple data sent using ajax
+                    success: function(doc) {
+                        debugger
+                        $('#drTime').val(doc);
+                        $('#drTime').html('');
+                        $.each(doc, function(iteration, val) {
+                            debugger
+                            $('#drTime').append($('<option></option>').val(val.drTimeID).html(val.availableTime))
+                        });
+                        $('#drTime').change();
+                    }
+                });
+            });
+            //$('#drTime').on('change', function() {
+            //    debugger
+            //    var drtimeId = $('#drTime :selected').val();
+
+            //});
+        });
+        
+    </script>
+}
