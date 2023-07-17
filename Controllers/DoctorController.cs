@@ -19,6 +19,7 @@ namespace PatientMgmtfinal.Controllers
             _notyf = notyf;
         }
         // GET: DoctorController
+        //[Authorize(Roles = "SuperAdmin")]
         public ActionResult Index()
         {
             var doctorList = _dbContext.Doctor.ToList();

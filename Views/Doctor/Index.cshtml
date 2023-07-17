@@ -1,4 +1,8 @@
-﻿@model List<Doctor>
+﻿
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@model List<Doctor>
 
 @{
     ViewData["Title"] = "List of Doctor";
@@ -10,7 +14,10 @@
             <h1>Doctor</h1>
         </div>
         @*<a class="nav-link" asp-controller="Doctor" asp-action="index">List</a>*@
-        <a class="nav-link" asp-controller="Doctor" asp-action="create">Add</a>
+        @if ((AuthorizationService.AuthorizeAsync(User, Permissions.DoctorPatientManagement.Create)).Result.Succeeded)
+        {
+            <a class="nav-link" asp-controller="Doctor" asp-action="create">Add</a>
+        }
     </nav>
     
     <div class="table-responsive">
@@ -40,9 +47,18 @@
                             <select class="form-control-plaintext" asp-for="@data.DepID" asp-items="ViewBag.DepartmentList" disabled></select>
                         </td>
                         <td>
-                            <a asp-controller="Doctor" asp-action="Edit" class="btn btn-outline-info btn-sm" asp-route-Id="@data.DoctorID">Edit</a>
-                            <a asp-controller="Doctor" asp-action="Details" class="btn btn-outline-secondary btn-sm" asp-route-Id="@data.DoctorID">Details</a>
-                            <a asp-controller="Doctor" asp-action="Delete" class="btn btn-outline-danger btn-sm" asp-route-Id="@data.DoctorID">Delete</a>
+                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.DoctorPatientManagement.Edit)).Result.Succeeded)
+                            {
+                                <a asp-controller="Doctor" asp-action="Edit" class="btn btn-outline-info btn-sm" asp-route-Id="@data.DoctorID">Edit</a>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.DoctorPatientManagement.View)).Result.Succeeded)
+                            {
+                                <a asp-controller="Doctor" asp-action="Details" class="btn btn-outline-secondary btn-sm" asp-route-Id="@data.DoctorID">Details</a>
+                            }
+                            @if ((AuthorizationService.AuthorizeAsync(User, Permissions.DoctorPatientManagement.Delete)).Result.Succeeded)
+                            {
+                                <a asp-controller="Doctor" asp-action="Delete" class="btn btn-outline-danger btn-sm" asp-route-Id="@data.DoctorID">Delete</a>
+                            }
                         </td>
                     </tr>
                 }
