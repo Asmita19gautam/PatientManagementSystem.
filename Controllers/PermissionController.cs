@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PatientMgmtfinal.Helpers;
@@ -10,10 +11,12 @@ namespace PatientMgmtfinal.Controllers
     public class PermissionController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly INotyfService _notyfs;
 
-        public PermissionController(RoleManager<IdentityRole> roleManager)
+        public PermissionController(RoleManager<IdentityRole> roleManager, INotyfService _notyf)
         {
             _roleManager = roleManager;
+            _notyfs = _notyf;
         }
         public async Task<ActionResult> Index(string roleId)
         {
@@ -49,7 +52,10 @@ namespace PatientMgmtfinal.Controllers
             {
                 await _roleManager.AddPermissionClaim(role, claim.Value);
             }
-            return RedirectToAction("Index", new { roleId = model.RoleId });
+            _notyfs.Success("Permission added successfully", 5);
+
+            //return RedirectToAction("Index", new { roleId = model.RoleId });
+            return RedirectToAction("Index","Roles");
         }
     }
 }
